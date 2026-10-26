@@ -12,7 +12,7 @@ df = pd.read_excel(file_path)
 # print("Missing value", df.isnull().sum())
 # print(df.dtypes)
 
-df["transaction_Date"] = pd.to_datetime(df["transaction_date"])
+df["transaction_date"] = pd.to_datetime(df["transaction_date"])
 df["Revenue"] = df["transaction_qty"] * df["unit_price"] 
 
 df["Month"] = df["transaction_date"].dt.month_name()
@@ -21,16 +21,16 @@ df["Day_Name"] = df["transaction_date"].dt.day_name()
 # print(df.head())
 
 #Sales Analysis
-total_transactions = df["transaction_id"].unique()
+total_transactions = df["transaction_id"].nunique()
 total_units_sold = df["transaction_qty"].sum()
 total_revenue = df["Revenue"].sum()
 average_transaction_value = df.groupby("transaction_id")["Revenue"].sum().mean()
 
-#Summary
-# print("Total Transaction", total_transactions)
-# print(" Total Units Sold" , total_units_sold)
-# print("Total Revenue", round(total_revenue), 2)
-# print("ACg Transactions Value", round(average_transaction_value, 2))
+# Summary
+print("Total Transaction", total_transactions)
+print(" Total Units Sold" , total_units_sold)
+print("Total Revenue", round(total_revenue, 2))
+print("ACg Transactions Value", round(average_transaction_value, 2))
 
 
 #Category Wise Revenue
@@ -40,19 +40,19 @@ category_sales = category_sales.sort_values(ascending=False)
 # print(category_sales)
 
 #======Data Validation
-# print("Total rows", len(df))
-# print("Unique Transactions",
-#     df["transaction_id"].unique()
-#     )
-# print("Duplicated tracnsaction ids",
-#     df["transaction_id"].duplicated().sum()
-# )
-# print("Total revenue",
-#     round(df["Revenue"].sum(), 2)
-# )
-# print("Missing value",
-#     df.isnull().sum().sum()
-# )
+print("Total rows", len(df))
+print("Unique Transactions",
+    df["transaction_id"].unique()
+    )
+print("Duplicated tracnsaction ids",
+    df["transaction_id"].duplicated().sum()
+)
+print("Total revenue",
+    round(df["Revenue"].sum(), 2)
+)
+print("Missing value",
+    df.isnull().sum().sum()
+)
 
 #========== Store - wise sales analysis
 store_sales = df.groupby("store_location").agg(
@@ -69,8 +69,8 @@ store_sales = store_sales.sort_values(
 best_store = store_sales["total_revenue"].idxmax()
 best_revenue = store_sales.loc[best_store, "total_revenue"]
 
-# print(best_store)
-# print(round(best_revenue, 2))
+print(best_store)
+print(round(best_revenue, 2))
 
 #============== Monthly sales analysis
 monthly_sales = df.groupby("Month").agg(
@@ -83,17 +83,17 @@ monthly_sales = df.groupby("Month").agg(
 month_order = ["January", "February", "March",
                "April", "May", "June"]
 monthly_sales = monthly_sales.reindex(month_order)
-# print(monthly_sales.round(2))
+print(monthly_sales.round(2))
 
 #=======Best month===
 best_month = monthly_sales["total_revenue"].idxmax() 
 best_revenue = monthly_sales.loc[best_month, "total_revenue"]
 
-# print(best_month)
-# print("Revenue", round(monthly_sales.loc[best_month, "total_revenue"], 2))
+print(best_month)
+print("Revenue", round(monthly_sales.loc[best_month, "total_revenue"], 2))
 
 #=================== Monthly sales visualization
-df["Month"] = df["transaction_Date"].dt.month_name()
+df["Month"] = df["transaction_date"].dt.month_name()
 monthly_sales["total_revenue"].plot(
     kind="bar",
     figsize=(10, 5),
@@ -124,17 +124,17 @@ product_sales = product_sales.sort_values(
     ascending= False
 )
 
-# print("Product category performance", product_sales.round(2))
+print("Product category performance", product_sales.round(2))
 
 # #top 5 categories by revenue
-# print(product_sales.head(5).round(2))
+print(product_sales.head(5).round(2))
 
-# #best selling category by units
-# best_category = product_sales["total_units"].idxmax()
-# print(best_category)
-# print(
-#     "Unit Sold:", int(product_sales.loc[best_category, "total_units"])
-# )
+#best selling category by units
+best_category = product_sales["total_units"].idxmax()
+print(best_category)
+print(
+    "Unit Sold:", int(product_sales.loc[best_category, "total_units"])
+)
 
 #=================== DAY-WISE SALES ANALYSIS=====
 df["Day_Name"] = df["transaction_date"].dt.day_name()
@@ -149,11 +149,11 @@ daily_sales = df.groupby("Day_Name").agg(
 daily_sales = daily_sales.reindex(day_order)
 best_day = daily_sales["total_revenue"].idxmax()
 
-# print(daily_sales.round(2))
-# print("Highest revenue day", best_day)
-# print(
-#     "Revenue :" , round(daily_sales.loc[best_day, "total_revenue"], 2)
-# )
+print(daily_sales.round(2))
+print("Highest revenue day", best_day)
+print(
+    "Revenue :" , round(daily_sales.loc[best_day, "total_revenue"], 2)
+)
 
 
 
