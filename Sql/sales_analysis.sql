@@ -94,3 +94,32 @@ GROUP BY
 DAYOFWEEK(transaction_date),
 DAYNAME(transaction_date)
 ORDER BY DAYOFWEEK(transaction_date);
+
+
+
+ -- 7. DATA QUALITY CHECKS
+
+-- Total records aur duplicate transaction IDs
+SELECT
+    COUNT(*) AS total_records,
+    COUNT(DISTINCT transaction_id) AS unique_transactions,
+    COUNT(*) - COUNT;
+
+
+--. Check missing values in important columns
+SELECT
+    SUM(transaction_id IS NULL) AS missing_transaction_id,
+    SUM(transaction_date IS NULL) AS missing_transaction_date,
+    SUM(transaction_qty IS NULL) AS missing_quantity,
+    SUM(unit_price IS NULL) AS missing_unit_price,
+    SUM(product_category IS NULL) AS missing_category,
+    SUM(product_type IS NULL) AS missing_product_type
+FROM coffee_sales;
+
+--  Check invalid prices, quantities, and future dates
+SELECT
+    SUM(unit_price <= 0) AS invalid_prices,
+    SUM(transaction_qty <= 0) AS invalid_quantities,
+    SUM(transaction_date IS NOT NULL
+        AND transaction_date > CURRENT_DATE()) AS future_dates
+FROM coffee_sales;
